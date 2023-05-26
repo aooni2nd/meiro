@@ -1,11 +1,11 @@
-#!ruby -Ks
+#!ruby -Ks #必要ない
 
 require "dxruby"
 
-XMAX=66
-YMAX=50
+XMAX=66 #迷路のサイズ
+YMAX=50 #迷路のサイズ
 
-SIZE = 10
+SIZE = 10 #描画される画面の大きさ
 
 $dirtable = [
   [0,1,2,3], [0,1,3,2], [0,2,1,3], [0,2,3,1], [0,3,1,2], [0,3,2,1],
@@ -96,13 +96,13 @@ $image = Image.new(XMAX * SIZE, YMAX * SIZE)
     y = j - 2
 
     if ($map[i][j] == 1)
-      $image.boxFill(x * SIZE, y * SIZE, (x + 1) * SIZE, (y + 1) * SIZE, [255,255,255])
+      $image.boxFill(x * SIZE, y * SIZE, (x + 1) * SIZE, (y + 1) * SIZE, [255,255,255]) #描画の調整
     end
   end
 end
 
 Window.loop do
-  Window.draw(SIZE / 2, SIZE / 2, $image)
+  Window.draw(SIZE / 2, SIZE / 2, $image) #描画の命令
 
   break if Input.keyPush?(K_ESCAPE)
 end
