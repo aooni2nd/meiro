@@ -68,7 +68,7 @@ is_menu_screen = true
 is_gacha_menu_screen = false
 is_gacha_screen = false
 selected_item = nil
-gacha_result_image = nil
+gacha_result_image = Image.load("item1.png")
 gacha_result_name = nil
 #maze_game = MazeGame.new
 
@@ -106,7 +106,7 @@ Window.loop do
       
   elsif is_gacha_menu_screen
     # ガチャメニューの描画q
-    Window.draw_font(100, 100, "ガチャメニュー", Font.default)
+    Window.draw_font(100, 100, "↑を押してガチャを引く", Font.default)
 
     if Input.key_push?(K_UP)
       selected_item = items.sample
@@ -121,13 +121,14 @@ Window.loop do
     end
   elsif is_gacha_screen
     if selected_item
-      Window.draw(0, 0, gacha_result_image)
-      Window.draw_font(10, 10, "超激レア", Font.default) if selected_item.rarity == "超激レア"
+      Window.draw_scale(210, 130, gacha_result_image,4,4)
+      Window.draw_font(140, 300, "Enterでメニューに戻る", Font.default)
+      Window.draw_font(1000, 1000, "超激レア", Font.default) if selected_item.rarity == "超激レア"
       Window.draw_font(30, 400, "ガチャ結果: #{gacha_result_name}", Font.default)
     else
       default_item_image = items[0].load_image
       Window.draw(0, 0, default_item_image)
-      Window.draw_font(10, 10, "超激レア", Font.default)
+      Window.draw_font(1000, 1000, "超激レア", Font.default)
       Window.draw_font(30, 400, "ガチャ結果: #{items[0].name}", Font.default)
     end
 
