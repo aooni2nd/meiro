@@ -19,15 +19,23 @@ class GachaItem
 end
 
 items = [
-  GachaItem.new("アイテム1", "item1.png", "通常"),
-  GachaItem.new("アイテム2", "item2.png", "通常"),
-  GachaItem.new("アイテム3", "item3.png", "超激レア")
+  GachaItem.new("man", "ch1man.png", "通常"),
+  GachaItem.new("woman", "ch2woman.png", "通常"),
+  GachaItem.new("cos", "ch3cos.png", "超激レア"),
+  GachaItem.new("fox", "ch4fox.png", "通常"),
+  GachaItem.new("oct", "ch5oct.png", "通常"),
+  GachaItem.new("ball", "ch6.png", "超激レア")
+
 ]
 
-gacha_result_image = Image.load("item1.png")
+menu_image = Image.load('menu.png')
+gacha_menu_image = Image.load('gacha_menu.png')
+gacha_result_menu_image = Image.load('gacha_result_menu.png')
+gacha_result_image = Image.load("ch1man.png")
+
 
 # 迷路データ
-m_jigen = 11   #★必ず 5以上の奇数 を入れてください
+m_jigen = 15   #★必ず 5以上の奇数 を入れてください
 p_jigen = (m_jigen-3) / 2
 
 #------------------------------------------------------------
@@ -88,6 +96,7 @@ for i in 0..p_jigen-1
 end
 
 
+
 # キャラクターの位置
 player_x = 1
 player_y = 1
@@ -116,10 +125,13 @@ game_clear = false
 is_menu_screen = true
 is_gacha_menu_screen = false
 is_gacha_screen = false
+is_result_screen = false
 selected_item = nil
-gacha_result_image = Image.load("item1.png")
+gacha_result_image = Image.load("ch1man.png")
 gacha_result_name = nil
 #maze_game = MazeGame.new
+
+is_result_screen = false
 
 Window.loop do
   # メニュー画面の選択肢を定義
@@ -127,19 +139,22 @@ Window.loop do
 
   if is_menu_screen
     # メニュー画面の描画
-    Window.draw_font(10, 10, "メニュー画面", Font.default)
+    
+    #Window.draw_font(10, 10, "メニュー画面", Font.default)
+    
+    Window.draw(3, 0, menu_image)
     menu_items.each_with_index do |item, index|
-      Window.draw_font(10, 60 + index * 30, "#{index + 1}: #{item}", Font.default)
-      Window.draw_font(10, 400, "ガチャ結果: #{gacha_result_name}", Font.default)
+      #Window.draw_font(10, 60 + index * 30, "#{index + 1}: #{item}", Font.default)
+      Window.draw_font(10, 700, "ガチャ結果: #{gacha_result_name}", Font.default)
     end
 
     # キー入力をチェックして選択肢を処理
-    if Input.key_push?(K_1)
+    if Input.key_push?(K_2)
       # ガチャを選択した場合の処理
       puts "ガチャが選択されました"
       is_menu_screen = false
       is_gacha_menu_screen = true
-    elsif Input.key_push?(K_2)
+    elsif Input.key_push?(K_1)
       # 迷路ゲームを選択した場合の処理
       puts "迷路ゲームが選択されました"
       is_menu_screen = false
@@ -154,11 +169,12 @@ Window.loop do
     end
       
   elsif is_gacha_menu_screen
-    # ガチャメニューの描画q
-    Window.draw_font(100, 100, "↑を押してガチャを引く", Font.default)
+    # ガチャメニューの描画
+    Window.draw(3, 0, gacha_menu_image)
 
-    if Input.key_push?(K_UP)
+    if Input.key_push?(K_DOWN)
       selected_item = items.sample
+      
       puts "ガチャの結果: #{selected_item.name} (#{selected_item.rarity})"
       is_gacha_menu_screen = false
       is_gacha_screen = true
@@ -170,15 +186,16 @@ Window.loop do
     end
   elsif is_gacha_screen
     if selected_item
-      Window.draw_scale(210, 130, gacha_result_image,4,4)
-      Window.draw_font(140, 300, "Enterでメニューに戻る", Font.default)
+      Window.draw(3, 0, gacha_result_menu_image)
+      Window.draw_scale(330, 330, gacha_result_image,3,3)
+      Window.draw_font(300, 700, "Enterでメニューに戻る", Font.default)
       Window.draw_font(1000, 1000, "超激レア", Font.default) if selected_item.rarity == "超激レア"
-      Window.draw_font(30, 400, "ガチャ結果: #{gacha_result_name}", Font.default)
+  
     else
       default_item_image = items[0].load_image
       Window.draw(0, 0, default_item_image)
       Window.draw_font(1000, 1000, "超激レア", Font.default)
-      Window.draw_font(30, 400, "ガチャ結果: #{items[0].name}", Font.default)
+      Window.draw_font(10, 700, "ガチャ結果: #{items[0].name}", Font.default)
     end
 
     if Input.key_push?(K_RETURN)
@@ -188,10 +205,26 @@ Window.loop do
       #gacha_result_image = nil
       #gacha_result_name = nil
     end
+  elsif is_result_screen
+    Window.draw_font(50, 50, "Game Clear!", Font.default, color: C_BLUE)
+    Window.draw_font(140, 300, "Enterでメニューに戻る", Font.default)
+    # キャラクターの位置リセット
+    player_x = 1
+    player_y = 1
+    if Input.key_push?(K_RETURN)
+      is_result_screen = false
+      is_menu_screen = true
+      game_clear = false
+      
+    end
   end
+  
+
+
+
 
   # 迷路ゲームの描画と更新
-  if !is_menu_screen && !is_gacha_menu_screen && !is_gacha_screen
+  if !is_menu_screen && !is_gacha_menu_screen && !is_gacha_screen&& !is_result_screen 
     # ゲームの描画
     Window.draw_box_fill(0, 0, window_width, window_height, C_WHITE) # 背景の描画
 
@@ -208,7 +241,7 @@ Window.loop do
     end
   
     # プレイヤーの描画
-    Window.draw(player_x * 50, player_y * 50, gacha_result_image)
+    Window.draw_scale(player_x * 50 - 40, player_y * 50 - 40, gacha_result_image,0.39,0.39)
   
     # ゴールの描画
     Window.draw_box_fill(goal_x * 50, goal_y * 50, goal_x * 50 + 50, goal_y * 50 + 50, C_GREEN)
@@ -234,8 +267,9 @@ Window.loop do
   
     # ゲームクリア時の処理
     if game_clear
-      Window.draw_font(100, 200, "Game Clear!", Font.default, color: C_BLUE)
-      break
+      is_result_screen = true
+      #Window.draw_font(100, 200, "Game Clear!", Font.default, color: C_BLUE)
+    
     end
   end
   
