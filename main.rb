@@ -231,6 +231,7 @@ Window.loop do
     elsif Input.key_push?(K_1)
       # 迷路ゲームを選択した場合の処理
       puts "迷路ゲームが選択されました"
+      start_time = Time.now
       is_menu_screen = false
       is_gacha_menu_screen = false
       is_gacha_screen = false
