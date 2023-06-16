@@ -353,6 +353,7 @@ Window.loop do
      # ゲームの終了条件判定
     if remaining_time <= 0
       game_lose = true
+      item_get = false
     end
   
 
@@ -416,12 +417,14 @@ Window.loop do
     # 敵と接触
     if player_x == enemy_x && player_y == enemy_y
        game_lose = true
+       item_get = false
     end
 
 
     # ゲームの終了条件(勝ち)
     if player_x == goal_x && player_y == goal_y
       game_clear = true
+      item_get = false
     end
   
     # ゲームクリア時の処理
