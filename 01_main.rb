@@ -198,6 +198,7 @@ game_lose = false
 item_get = false
 item = Image.load("item.png")
 item_x, item_y = road_point(0, 0)
+item_x, item_y = random_move(item_x, item_y)
 
 
 #スクリーン制御
@@ -410,6 +411,11 @@ Window.loop do
     #アイテム
     if player_x == item_x && player_y == item_y
       item_get = true
+    end
+    
+　　# 敵と接触
+    if player_x == enemy_x && player_y == enemy_y
+       game_lose = true
     end
 
 
