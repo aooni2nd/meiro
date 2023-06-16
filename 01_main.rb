@@ -413,7 +413,7 @@ Window.loop do
       item_get = true
     end
     
-　　# 敵と接触
+    # 敵と接触
     if player_x == enemy_x && player_y == enemy_y
        game_lose = true
     end
