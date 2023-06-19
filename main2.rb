@@ -25,20 +25,21 @@ class GachaItem
 end
 
 items = [
-  GachaItem.new("man", "ch1man.png", "通常"),
-  GachaItem.new("woman", "ch2woman.png", "通常"),
-  GachaItem.new("cos", "ch3cos.png", "超激レア"),
-  GachaItem.new("fox", "ch4fox.png", "通常"),
-  GachaItem.new("oct", "ch5oct.png", "通常"),
-  GachaItem.new("ball", "ch6.png", "超激レア")
+  GachaItem.new("man", "image/ch1man.png", "通常"),
+  GachaItem.new("woman", "image/ch2woman.png", "通常"),
+  GachaItem.new("cos", "image/ch3cos.png", "超激レア"),
+  GachaItem.new("fox", "image/ch4fox.png", "通常"),
+  GachaItem.new("oct", "image/ch5oct.png", "通常"),
+  GachaItem.new("ball", "image/ch6.png", "超激レア")
 
 ]
 
-menu_image = Image.load('menu.png')
-gacha_menu_image = Image.load('gacha_menu.png')
-gacha_result_menu_image = Image.load('gacha_result_menu.png')
-gacha_result_image = Image.load("ch1man.png")
-lose_result_image = Image.load("lose_result_menu.png")
+menu_image = Image.load('image/menu.png')
+gacha_menu_image = Image.load('image/gacha_menu.png')
+gacha_result_menu_image = Image.load('image/gacha_result_menu.png')
+gacha_result_image = Image.load("image/ch1man.png")
+lose_result_image = Image.load("image/lose_result_menu.png")
+wall_image= Image.load("image/wall.png")
 
 
 def maze(m_jigen)
@@ -213,7 +214,7 @@ is_gacha_screen = false
 is_result_screen = false
 lose_result_screen = false
 selected_item = nil
-gacha_result_image = Image.load("ch1man.png")
+gacha_result_image = Image.load("image/ch1man.png")
 gacha_result_name = nil
  
 #maze_game = MazeGame.new
@@ -350,7 +351,7 @@ Window.loop do
       maze_width.times do |j|
         case $maze[i][j]
         when 1
-          Window.draw_box_fill(j * 50, i * 50, j * 50 + 50, i * 50 + 50, C_BLACK) # 壁の描画
+          Window.draw(j * 50, i * 50, wall_image) # 壁の描画
         when 0
           Window.draw_box_fill(j * 50, i * 50, j * 50 + 50, i * 50 + 50, C_WHITE) # 道の描画
         end
