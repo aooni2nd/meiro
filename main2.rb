@@ -197,7 +197,7 @@ game_lose = false
 
 #マップアイテム(時計)
 item_get = false
-item = Image.load("item.png")
+item = Image.load("image/item.png")
 item_x, item_y = road_point(0, 0)
 item_x, item_y = random_move(item_x, item_y)
 
