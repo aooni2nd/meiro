@@ -203,7 +203,7 @@ item_x, item_y = random_move(item_x, item_y)
 
 #マップアイテム(攻撃)　敵倒すアイテム変更
 item2_get = false
-item2 = Image.load("sord.png")
+item2 = Image.load("image/tag.png")
 item2_x, item2_y = road_point(0, 0)
 item_x, item_y = random_move(item_x, item_y)
 
