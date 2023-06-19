@@ -159,7 +159,7 @@ end
 
 
 #敵に関する諸変数定義
-enemy_image = Image.load("item1.png")     #敵の見た目
+enemy_image = Image.load("image/enemy.PNG")     #敵の見た目
 enemy_flag = false          #敵の動作準備フラグ
 
 #敵の位置（初期）を決定する（初回なのでroad_point(テキトーな値, テキトーな値)で呼び出す）
@@ -252,6 +252,8 @@ Window.loop do
       is_menu_screen = false
       is_gacha_menu_screen = false
       is_gacha_screen = false
+      item2_get=false
+      
       
       # 迷路ゲームの処理を行う
       puts "迷路ゲームが選択されました"
@@ -306,6 +308,7 @@ Window.loop do
     # キャラクターの位置リセット
     player_x = 1
     player_y = 1
+    enemy_i=0
     if Input.key_push?(K_RETURN)
       is_result_screen = false
       is_menu_screen = true
@@ -320,6 +323,7 @@ Window.loop do
     remaining_time = 5
     player_x = 1
     player_y = 1
+    enemy_i=0
 
     start_time = Time.now
     if Input.key_push?(K_RETURN)
@@ -353,6 +357,14 @@ Window.loop do
       end
     end
     
+
+
+    enemy_i==0
+  
+    
+
+
+
     # タイマーの描画
     
     elapsed_time = (Time.now - start_time).to_i
@@ -390,10 +402,10 @@ Window.loop do
     # ゴールの描画
     Window.draw_box_fill(goal_x * 50, goal_y * 50, goal_x * 50 + 50, goal_y * 50 + 50, C_GREEN)
 
-     #敵の描画
-     if enemy_i==0
-       Window.draw(enemy_x * 50, enemy_y * 50, enemy_image)        #enemy_imageは画像
-     end
+    #敵の描画
+    if enemy_i==0
+      Window.draw_scale(enemy_x * 50- 40, enemy_y * 50- 40, enemy_image,0.39,0.39)        #enemy_imageは画像
+    end
 
     #敵の移動
     while enemy_flag == true
@@ -424,6 +436,10 @@ Window.loop do
       player_x += 1
       enemy_flag = true
     end
+
+
+
+
   
 
     #アイテム
