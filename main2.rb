@@ -1,5 +1,7 @@
 require 'dxruby'
 
+
+
 Window.width = 800
 Window.height = 600
 
@@ -30,8 +32,8 @@ items = [
   GachaItem.new("cos", "image/ch3cos.png", "超激レア"),
   GachaItem.new("fox", "image/ch4fox.png", "通常"),
   GachaItem.new("oct", "image/ch5oct.png", "通常"),
-  GachaItem.new("ball", "image/ch6.png", "超激レア")
-
+  GachaItem.new("ball", "image/ch6.png", "超激レア"),
+  GachaItem.new("warewarewa", "image/ch7.png", "超激レア")
 ]
 
 menu_image = Image.load('image/menu.png')
@@ -40,6 +42,14 @@ gacha_result_menu_image = Image.load('image/gacha_result_menu.png')
 gacha_result_image = Image.load("image/ch1man.png")
 lose_result_image = Image.load("image/lose_result_menu.png")
 wall_image= Image.load("image/wall.png")
+road_image =Image.load("image/road.png")
+exit_image =Image.load("image/exit.png")
+
+#音楽
+menu_sound = Sound.new("menu.wav")
+
+
+
 
 
 def maze(m_jigen)
@@ -233,7 +243,8 @@ Window.loop do
     # メニュー画面の描画
     
     #Window.draw_font(10, 10, "メニュー画面", Font.default)
-    
+    menu_sound.play
+
     Window.draw(3, 0, menu_image)
     menu_items.each_with_index do |item, index|
       #Window.draw_font(10, 60 + index * 30, "#{index + 1}: #{item}", Font.default)
@@ -246,6 +257,8 @@ Window.loop do
       puts "ガチャが選択されました"
       is_menu_screen = false
       is_gacha_menu_screen = true
+      menu_sound.stop
+
     elsif Input.key_push?(K_1)
       # 迷路ゲームを選択した場合の処理
       puts "迷路ゲームが選択されました"
@@ -254,7 +267,7 @@ Window.loop do
       is_gacha_menu_screen = false
       is_gacha_screen = false
       item2_get=false
-      
+      menu_sound.stop
       
       # 迷路ゲームの処理を行う
       puts "迷路ゲームが選択されました"
@@ -310,6 +323,7 @@ Window.loop do
     player_x = 1
     player_y = 1
     enemy_i=0
+    time_i = 0
     if Input.key_push?(K_RETURN)
       is_result_screen = false
       is_menu_screen = true
@@ -324,7 +338,8 @@ Window.loop do
     remaining_time = 5
     player_x = 1
     player_y = 1
-    enemy_i=0
+    enemy_i = 0
+    time_i = 0
 
     start_time = Time.now
     if Input.key_push?(K_RETURN)
@@ -353,15 +368,14 @@ Window.loop do
         when 1
           Window.draw(j * 50, i * 50, wall_image) # 壁の描画
         when 0
-          Window.draw_box_fill(j * 50, i * 50, j * 50 + 50, i * 50 + 50, C_WHITE) # 道の描画
+          Window.draw(j * 50, i * 50, road_image) # 道の描画
         end
       end
     end
     
+    
 
-
-    enemy_i==0
-  
+    
     
 
 
@@ -400,13 +414,17 @@ Window.loop do
       Window.draw(item2_x * 50, item2_y * 50,item2)
     end
 
-    # ゴールの描画
+    # ゴールの描画  
     Window.draw_box_fill(goal_x * 50, goal_y * 50, goal_x * 50 + 50, goal_y * 50 + 50, C_GREEN)
 
     #敵の描画
     if enemy_i==0
       Window.draw_scale(enemy_x * 50- 40, enemy_y * 50- 40, enemy_image,0.39,0.39)        #enemy_imageは画像
     end
+
+
+  
+
 
     #敵の移動
     while enemy_flag == true

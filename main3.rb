@@ -30,7 +30,8 @@ items = [
   GachaItem.new("cos", "image/ch3cos.png", "超激レア"),
   GachaItem.new("fox", "image/ch4fox.png", "通常"),
   GachaItem.new("oct", "image/ch5oct.png", "通常"),
-  GachaItem.new("ball", "image/ch6.png", "超激レア")
+  GachaItem.new("ball", "image/ch6.png", "超激レア"),
+  GachaItem.new("warewarewa","image/ch7.png", "超激レア")
 
 ]
 
@@ -40,6 +41,10 @@ gacha_result_menu_image = Image.load('gacha_result_menu.png')
 gacha_result_image = Image.load("ch1man.png")
 lose_result_image = Image.load("lose_result_menu.png")
 wall_image= Image.load("wall.png")
+road_image =Image.load("image/road.png")
+exit_image =Image.load("image/exit.png")
+
+
 
 
 def maze(m_jigen)
@@ -354,7 +359,7 @@ Window.loop do
         when 1
           Window.draw(j * 50, i * 50, wall_image) # 壁の描画
         when 0
-          Window.draw_box_fill(j * 50, i * 50, j * 50 + 50, i * 50 + 50, C_WHITE) # 道の描画
+          Window.draw(j * 50, i * 50, road_image)  # 道の描画
         end
       end
     end

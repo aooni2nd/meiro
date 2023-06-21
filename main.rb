@@ -25,83 +25,100 @@ class GachaItem
 end
 
 items = [
-  GachaItem.new("man", "ch1man.png", "通常"),
-  GachaItem.new("woman", "ch2woman.png", "通常"),
-  GachaItem.new("cos", "ch3cos.png", "超激レア"),
-  GachaItem.new("fox", "ch4fox.png", "通常"),
-  GachaItem.new("oct", "ch5oct.png", "通常"),
-  GachaItem.new("ball", "ch6.png", "超激レア")
+  GachaItem.new("man", "image/ch1man.png", "通常"),
+  GachaItem.new("woman", "image/ch2woman.png", "通常"),
+  GachaItem.new("cos", "image/ch3cos.png", "超激レア"),
+  GachaItem.new("fox", "image/ch4fox.png", "通常"),
+  GachaItem.new("oct", "image/ch5oct.png", "通常"),
+  GachaItem.new("ball", "image/ch6.png", "超激レア"),
+  GachaItem.new("warewarewa","image/ch7.png", "超激レア")
 
 ]
 
-menu_image = Image.load('menu.png')
-gacha_menu_image = Image.load('gacha_menu.png')
-gacha_result_menu_image = Image.load('gacha_result_menu.png')
-gacha_result_image = Image.load("ch1man.png")
-lose_result_image = Image.load("lose_result_menu.png")
+menu_image = Image.load('image/menu.png')
+gacha_menu_image = Image.load('image/gacha_menu.png')
+gacha_result_menu_image = Image.load('image/gacha_result_menu.png')
+gacha_result_image = Image.load("image/ch1man.png")
+lose_result_image = Image.load("image/lose_result_menu.png")
+wall_image= Image.load("image/wall.png")
+road_image =Image.load("image/road.png")
+exit_image =Image.load("image/exit.png")
+
+#音楽
+menu_sound = Sound.new("audio/menu.wav")
+game_sound = Sound.new("audio/game.wav")
+dron_sound = Sound.new("audio/dron1.wav")
+item_sound = Sound.new("audio/item.wav")
 
 
 
-# 迷路データ
-m_jigen = 15   #★必ず 5以上の奇数 を入れてください
-p_jigen = (m_jigen-3) / 2
+def maze(m_jigen)
+    # 迷路データ
+    #m_jigen = 15   #★必ず 5以上の奇数 を入れてください
+    p_jigen = (m_jigen-3) / 2
 
-#------------------------------------------------------------
-#柱の配列を作る pillar
-pillar = Array.new(p_jigen) {Array.new(p_jigen, 0)}
-#puts(pillar.inspect)
+    #------------------------------------------------------------
+    #柱の配列を作る pillar
+    pillar = Array.new(p_jigen) {Array.new(p_jigen, 0)}
+    #puts(pillar.inspect)
 
-#乱数をつくり, 配列に代入していく
-for i in 0..p_jigen-1
-    for j in 0..p_jigen-1
-        if i == 0
-            pillar[i][j] = rand(0..3)   #一番上の行の柱は4方向に倒す
-        else
-            pillar[i][j] = rand(0..2)   #2行目以降の柱は3方向に倒す
+    #乱数をつくり, 配列に代入していく
+    for i in 0..p_jigen-1
+        for j in 0..p_jigen-1
+            if i == 0
+                pillar[i][j] = rand(0..3)   #一番上の行の柱は4方向に倒す
+            else
+                pillar[i][j] = rand(0..2)   #2行目以降の柱は3方向に倒す
+            end
         end
     end
-end
 
-#------------------------------------------------------------
-#迷路本体の配列を作る maze
-$maze = Array.new(m_jigen) {Array.new(m_jigen, 0)}
-#puts(maze.inspect)
+    #迷路本体の配列を作る maze
+    $maze = Array.new(m_jigen) {Array.new(m_jigen, 0)}
+    #puts(maze.inspect)
 
-#枠を作る
-#maze[縦][横]
-for n in 0..m_jigen-1
-    $maze[n][0] = 1        #左枠
-    $maze[n][m_jigen-1] = 1  #右枠
-    $maze[0][n] = 1        #上枠
-    $maze[m_jigen-1][n] = 1  #下枠
-end
-
-#pillarの柱がある部分を1にする
-for i in 0..p_jigen-1
-    for j in 0..p_jigen-1
-        row = 2*i + 2
-        col = 2*j + 2
-        $maze[row][col] = 1
+    #枠を作る
+    #maze[縦][横]
+    for n in 0..m_jigen-1
+        $maze[n][0] = 1        #左枠
+        $maze[n][m_jigen-1] = 1  #右枠
+        $maze[0][n] = 1        #上枠
+        $maze[m_jigen-1][n] = 1  #下枠
     end
-end
 
-#倒した柱をpillarからmazeに反映させる
-for i in 0..p_jigen-1
-    for j in 0..p_jigen-1
-        row = 2*i + 2   #縦
-        col = 2*j + 2   #横
-
-        if pillar[i][j] == 0
-            $maze[row][col-1] = 1
-        elsif pillar[i][j] == 1
-            $maze[row+1][col] = 1
-        elsif pillar[i][j] == 2
-            $maze[row][col+1] = 1
-        else
-            $maze[row-1][col] = 1
+    #pillarの柱がある部分を1にする
+    for i in 0..p_jigen-1
+        for j in 0..p_jigen-1
+            row = 2*i + 2
+            col = 2*j + 2
+            $maze[row][col] = 1
         end
     end
+
+    #倒した柱をpillarからmazeに反映させる
+    for i in 0..p_jigen-1
+        for j in 0..p_jigen-1
+            row = 2*i + 2   #縦
+            col = 2*j + 2   #横
+
+            if pillar[i][j] == 0
+                $maze[row][col-1] = 1
+            elsif pillar[i][j] == 1
+                $maze[row+1][col] = 1
+            elsif pillar[i][j] == 2
+                $maze[row][col+1] = 1
+            else
+                $maze[row-1][col] = 1
+            end
+        end
+    end
+    return $maze
 end
+#------------------------------------------------------------
+
+#ループが始まる前かつ、敵の湧く位置を決める前に迷路生成関数を呼び出す
+$maze = maze(15)    #サイズは15
+
 
 #Time変更部分
 # ゲーム開始時刻
@@ -109,6 +126,7 @@ start_time = Time.now
 
 # ゲーム終了フラグ
 game_over = false
+a=40
 
 
 
@@ -122,6 +140,7 @@ def road_point(xx, yy)        #変数は2つで, この関数内ではxxとyyで
   end
   return xx, yy
 end
+
 
 #次の立ち位置を返す関数
 #呼び出し方：●●, ▼▼ = random_move(移動前x座標, 移動前y座標) で関数呼び出しと格納を同時に行います
@@ -152,7 +171,7 @@ end
 
 
 #敵に関する諸変数定義
-enemy_image = Image.load("item1.png")     #敵の見た目
+enemy_image = Image.load("image/enemy.PNG")     #敵の見た目
 enemy_flag = false          #敵の動作準備フラグ
 
 #敵の位置（初期）を決定する（初回なのでroad_point(テキトーな値, テキトーな値)で呼び出す）
@@ -187,11 +206,17 @@ goal_y = maze_height - 2
 game_clear = false
 game_lose = false
 
-#マップアイテム
+#マップアイテム(時計)
 item_get = false
-item = Image.load("item.png")
+item = Image.load("image/item.png")
 item_x, item_y = road_point(0, 0)
+item_x, item_y = random_move(item_x, item_y)
 
+#マップアイテム(攻撃)　敵倒すアイテム変更
+item2_get = false
+item2 = Image.load("image/tag.png")
+item2_x, item2_y = road_point(0, 0)
+item_x, item_y = random_move(item_x, item_y)
 
 #スクリーン制御
 is_menu_screen = true
@@ -200,12 +225,16 @@ is_gacha_screen = false
 is_result_screen = false
 lose_result_screen = false
 selected_item = nil
-gacha_result_image = Image.load("ch1man.png")
+gacha_result_image = Image.load("image/ch1man.png")
 gacha_result_name = nil
  
 #maze_game = MazeGame.new
 
 is_result_screen = false
+
+#敵倒すアイテム変更
+enemy_i=0 #敵を倒す
+time_i=0 #時間増やす
 
 Window.loop do
   # メニュー画面の選択肢を定義
@@ -214,6 +243,9 @@ Window.loop do
   if is_menu_screen
     # メニュー画面の描画
     
+    #音鳴らす
+    menu_sound.play
+
     #Window.draw_font(10, 10, "メニュー画面", Font.default)
     
     Window.draw(3, 0, menu_image)
@@ -228,6 +260,7 @@ Window.loop do
       puts "ガチャが選択されました"
       is_menu_screen = false
       is_gacha_menu_screen = true
+      menu_sound.stop
     elsif Input.key_push?(K_1)
       # 迷路ゲームを選択した場合の処理
       puts "迷路ゲームが選択されました"
@@ -235,12 +268,18 @@ Window.loop do
       is_menu_screen = false
       is_gacha_menu_screen = false
       is_gacha_screen = false
+      item2_get=false
+      menu_sound.stop
+      
       
       # 迷路ゲームの処理を行う
       puts "迷路ゲームが選択されました"
       is_menu_screen = false
       is_gacha_menu_screen = false
       is_gacha_screen = false
+      #ここで迷路を新しく創る
+      $maze = maze(15)    #サイズは15
+
     end
       
   elsif is_gacha_menu_screen
@@ -280,12 +319,16 @@ Window.loop do
 
     end
   elsif is_result_screen
+    game_sound.stop
+    item_sound.stop
+    dron_sound.stop
     Window.draw_font(50, 50, "Game Clear!", Font.default, color: C_BLUE)
     Window.draw_font(140, 300, "Enterでメニューに戻る", Font.default)
     start_time = Time.now
     # キャラクターの位置リセット
     player_x = 1
     player_y = 1
+    enemy_i=0
     if Input.key_push?(K_RETURN)
       is_result_screen = false
       is_menu_screen = true
@@ -293,6 +336,9 @@ Window.loop do
       
     end
   elsif lose_result_screen 
+    game_sound.stop
+    item_sound.stop
+    dron_sound.stop
     Window.draw(3, 0, lose_result_image)
     #Window.draw_font(50, 50, "負け", Font.default, color: C_BLUE)
     Window.draw_font(300, 700, "Enterでメニューに戻る", Font.default)
@@ -300,6 +346,7 @@ Window.loop do
     remaining_time = 5
     player_x = 1
     player_y = 1
+    enemy_i=0
 
     start_time = Time.now
     if Input.key_push?(K_RETURN)
@@ -318,35 +365,54 @@ Window.loop do
 
   # 迷路ゲームの描画と更新
   if !is_menu_screen && !is_gacha_menu_screen && !is_gacha_screen&& !is_result_screen && !lose_result_screen 
+    
+    game_sound.play
     # ゲームの描画
     Window.draw_box_fill(0, 0, window_width, window_height, C_WHITE) # 背景の描画
-
+    
     # 迷路の描画
     maze_height.times do |i|
       maze_width.times do |j|
         case $maze[i][j]
         when 1
-          Window.draw_box_fill(j * 50, i * 50, j * 50 + 50, i * 50 + 50, C_BLACK) # 壁の描画
+          Window.draw(j * 50, i * 50, wall_image) # 壁の描画
         when 0
-          Window.draw_box_fill(j * 50, i * 50, j * 50 + 50, i * 50 + 50, C_WHITE) # 道の描画
+          Window.draw(j * 50, i * 50, road_image)  # 道の描画
         end
       end
     end
     
+
+
+    enemy_i==0
+  
+    
+
+
+
     # タイマーの描画
     
     elapsed_time = (Time.now - start_time).to_i
     remaining_time = TIME_LIMIT - elapsed_time
+    #敵倒すアイテム変更
+    #アイテム取得で時間増やす
+    if player_x == item_x && player_y == item_y
+        time_i=1
+      end
+      if time_i==1
+        remaining_time +=5
+        item_sound.play
+      end
     Window.draw_font(10, 10, "Time: #{remaining_time}", Font.default, color: TIME_COLOR, size: FONT_SIZE)
  
      # ゲームの終了条件判定
     if remaining_time <= 0
       game_lose = true
+      item_get = false
+      time_i=0
     end
-  
-
     
-  
+    
     # プレイヤーの描画
     Window.draw_scale(player_x * 50 - 40, player_y * 50 - 40, gacha_result_image,0.39,0.39)
   
@@ -355,11 +421,22 @@ Window.loop do
       Window.draw(item_x * 50, item_y * 50,item)
     end
 
+    #敵倒すアイテム変更
+    #アイテムゲット(攻撃)
+    if !(a<20)then
+      Window.draw(item2_x * 50, item2_y * 50,item2)
+      
+    end
+
     # ゴールの描画
     Window.draw_box_fill(goal_x * 50, goal_y * 50, goal_x * 50 + 50, goal_y * 50 + 50, C_GREEN)
-  
+
     #敵の描画
-    Window.draw(enemy_x * 50, enemy_y * 50, enemy_image)        #enemy_imageは画像
+    if enemy_i==0
+      Window.draw_scale(enemy_x * 50- 40, enemy_y * 50- 40, enemy_image,0.39,0.39)        #enemy_imageは画像
+    else
+      dron_sound.play
+    end
 
     #敵の移動
     while enemy_flag == true
@@ -370,13 +447,8 @@ Window.loop do
     enemy_flag = false
     end
 
-
-
-
-
-
-
-
+    #敵倒すアイテム変更
+    #アイテムゲット(攻撃)
 
     # ゲームの更新
     if Input.key_push?(K_UP) && $maze[player_y - 1][player_x] == 0
@@ -395,6 +467,10 @@ Window.loop do
       player_x += 1
       enemy_flag = true
     end
+
+
+
+
   
 
     #アイテム
@@ -402,21 +478,38 @@ Window.loop do
       item_get = true
     end
 
+    #敵倒すアイテム変更
+    if player_x == item2_x && player_y == item2_y
+      enemy_i=1
+      a=12
+    end
+    
+    # 敵と接触
+    if player_x == enemy_x && player_y == enemy_y && enemy_i==0
+       game_lose = true
+       item_get = false
+       time_i=0
+    end
+
 
     # ゲームの終了条件(勝ち)
     if player_x == goal_x && player_y == goal_y
       game_clear = true
+      item_get = false
+      time_i=0
     end
   
     # ゲームクリア時の処理
     if game_clear
       is_result_screen = true
+      a=40
       
       #Window.draw_font(100, 200, "Game Clear!", Font.default, color: C_BLUE)
     end
     
     if game_lose
       lose_result_screen = true
+      a=40
       
       #Window.draw_font(100, 200, "Game Clear!", Font.default, color: C_BLUE)
     
