@@ -5,7 +5,7 @@ Window.height = 600
 
 #Time変更部分a
 # 制限時間
-TIME_LIMIT = 20  # 制限時間（秒）
+TIME_LIMIT = 8  # 制限時間（秒）
 FONT_SIZE = 32  # 時間表示のフォントサイズ
 TIME_COLOR = [255, 255, 255]  # 時間表示の文字色
 
@@ -40,15 +40,20 @@ gacha_menu_image = Image.load('image/gacha_menu.png')
 gacha_result_menu_image = Image.load('image/gacha_result_menu.png')
 gacha_result_image = Image.load("image/ch1man.png")
 lose_result_image = Image.load("image/lose_result_menu.png")
+win_result_image = Image.load("image/win_result_menu.png")
 wall_image= Image.load("image/wall.png")
 road_image =Image.load("image/road.png")
 exit_image =Image.load("image/exit.png")
+
+
+
 
 #音楽
 menu_sound = Sound.new("audio/menu.wav")
 game_sound = Sound.new("audio/game.wav")
 dron_sound = Sound.new("audio/dron1.wav")
 item_sound = Sound.new("audio/item.wav")
+lose_sound = Sound.new("audio/lose.wav")
 
 
 
@@ -245,7 +250,7 @@ Window.loop do
     
     #音鳴らす
     menu_sound.play
-
+    lose_sound.stop
     #Window.draw_font(10, 10, "メニュー画面", Font.default)
     
     Window.draw(3, 0, menu_image)
@@ -301,8 +306,8 @@ Window.loop do
   elsif is_gacha_screen
     if selected_item
       Window.draw(3, 0, gacha_result_menu_image)
-      Window.draw_scale(330, 330, gacha_result_image,3,3)
-      Window.draw_font(300, 700, "Enterでメニューに戻る", Font.default)
+      Window.draw_scale(300, 330, gacha_result_image,3,3)
+      Window.draw_font(270, 700, "Enterでメニューに戻る", Font.default)
       Window.draw_font(1000, 1000, "超激レア", Font.default) if selected_item.rarity == "超激レア"
   
     else
@@ -319,11 +324,12 @@ Window.loop do
 
     end
   elsif is_result_screen
+    Window.draw(3, 0, win_result_image)
     game_sound.stop
     item_sound.stop
     dron_sound.stop
-    Window.draw_font(50, 50, "Game Clear!", Font.default, color: C_BLUE)
-    Window.draw_font(140, 300, "Enterでメニューに戻る", Font.default)
+    #Window.draw_font(50, 50, "Game Clear!", Font.default, color: C_BLUE)
+    Window.draw_font(270, 700, "Enterでメニューに戻る", Font.default)
     start_time = Time.now
     # キャラクターの位置リセット
     player_x = 1
@@ -339,9 +345,10 @@ Window.loop do
     game_sound.stop
     item_sound.stop
     dron_sound.stop
+    lose_sound.play
     Window.draw(3, 0, lose_result_image)
     #Window.draw_font(50, 50, "負け", Font.default, color: C_BLUE)
-    Window.draw_font(300, 700, "Enterでメニューに戻る", Font.default)
+    Window.draw_font(270, 700, "Enterでメニューに戻る", Font.default)
     # キャラクターの位置リセット
     remaining_time = 5
     player_x = 1
